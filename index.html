@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Option Formulas Cheatsheet</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="Option formulas at a glance: put–call parity, Black–Scholes, the Greeks and the VIX, with a live calculator. Works offline.">
+  <meta name="description" content="Option formulas at a glance: put–call parity, Black–Scholes, the Greeks, the VIX and the put/call ratio, with live calculators. Works offline.">
   <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#090d16" media="(prefers-color-scheme: dark)">
   <link rel="manifest" href="manifest.json">
@@ -24,7 +24,7 @@
       <img src="icon.svg" alt="" width="30" height="30">
       <div>
         <h1>Option Formulas Cheatsheet</h1>
-        <p class="subtitle">Put–call parity · Black–Scholes · Greeks · VIX</p>
+        <p class="subtitle">Put–call parity · Black–Scholes · Greeks · VIX · Put/call ratio</p>
       </div>
     </div>
     <div class="legend" aria-label="Symbols">
@@ -38,6 +38,7 @@
     <button class="tab" role="tab" id="tab-black-scholes" aria-controls="black-scholes" data-panel="black-scholes"><span class="long">Black–Scholes</span><span class="short">B–S</span></button>
     <button class="tab" role="tab" id="tab-greeks" aria-controls="greeks" data-panel="greeks"><span class="long">Greeks</span><span class="short">Greeks</span></button>
     <button class="tab" role="tab" id="tab-vix" aria-controls="vix" data-panel="vix"><span class="long">VIX</span><span class="short">VIX</span></button>
+    <button class="tab" role="tab" id="tab-pcr" aria-controls="pcr" data-panel="pcr"><span class="long">P/C Ratio</span><span class="short">P/C</span></button>
   </nav>
 
   <main>
@@ -222,9 +223,67 @@
         <div class="example">Example level shown. About 68% of the time the index stays within these ranges, if returns are roughly normal.</div>
       </div>
     </section>
+
+    <!-- 5. Put/call ratio -->
+    <section class="card" id="pcr" role="tabpanel" aria-labelledby="pcr-h" tabindex="0" hidden>
+      <div class="card-head"><h2 id="pcr-h">Put/Call Ratio</h2><span class="tag">Sentiment</span></div>
+      <p class="lede">How many puts trade (or are open) for every call. It shows how defensive option traders are, and is usually read as a contrarian signal: extreme fear often comes near lows, extreme complacency near highs.</p>
+      <div class="eq hero">
+        <div class="eq-row"><span class="eq-label">Volume</span>
+          <math display="block"><msub><mtext>PCR</mtext><mtext>vol</mtext></msub><mo>=</mo><mfrac><mrow><mo>∑</mo><mtext>put vol</mtext></mrow><mrow><mo>∑</mo><mtext>call vol</mtext></mrow></mfrac></math>
+        </div>
+        <div class="eq-row"><span class="eq-label">Open int.</span>
+          <math display="block"><msub><mtext>PCR</mtext><mtext>OI</mtext></msub><mo>=</mo><mfrac><mrow><mo>∑</mo><mtext>put OI</mtext></mrow><mrow><mo>∑</mo><mtext>call OI</mtext></mrow></mfrac></math>
+        </div>
+        <div class="eq-row"><span class="eq-label">Premium</span>
+          <math display="block"><msub><mtext>PCR</mtext><mi>$</mi></msub><mo>=</mo><mfrac><mrow><mo>∑</mo><msub><mi>V</mi><mi>p</mi></msub><mo>×</mo><msub><mi>P</mi><mi>p</mi></msub></mrow><mrow><mo>∑</mo><msub><mi>V</mi><mi>c</mi></msub><mo>×</mo><msub><mi>P</mi><mi>c</mi></msub></mrow></mfrac></math>
+        </div>
+        <div class="eq-row"><span class="eq-label">Put share</span>
+          <math display="block"><mfrac><mtext>puts</mtext><mrow><mtext>puts</mtext><mo>+</mo><mtext>calls</mtext></mrow></mfrac><mo>=</mo><mfrac><mtext>PCR</mtext><mrow><mn>1</mn><mo>+</mo><mtext>PCR</mtext></mrow></mfrac></math>
+        </div>
+      </div>
+      <dl class="vars">
+        <dt>volume</dt><dd>contracts traded today: a fast, noisy read of fresh positioning</dd>
+        <dt>open interest</dt><dd>contracts still open: slower, shows accumulated hedges and bets</dd>
+        <dt><i>V</i>, <i>P</i></dt><dd>volume and price of each put (<i>p</i>) or call (<i>c</i>); the premium version weights big-money trades over cheap lottery tickets</dd>
+        <dt>PCR = 1</dt><dd>as many puts as calls; the put share is then 50%</dd>
+      </dl>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Which ratio</th><th>Typical behaviour</th></tr></thead>
+          <tbody>
+            <tr><td>Equity-only</td><td>Retail-heavy and usually below 1 (more calls than puts); the one most often used for sentiment</td></tr>
+            <tr><td>Index (e.g. SPX)</td><td>Usually above 1, because institutions buy index puts as portfolio insurance; read it against its own average</td></tr>
+            <tr><td>Total</td><td>Equity and index combined; sits between the two</td></tr>
+            <tr><td>Single stock</td><td>Driven by events (earnings, news); compare with that stock's own history</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="calc" aria-labelledby="pcr-calc-h">
+        <div class="calc-title" id="pcr-calc-h">Try it · ratios from put and call counts</div>
+        <div class="inputs">
+          <label for="inPutVol"><span>Put volume</span><input id="inPutVol" type="number" inputmode="decimal" step="any" min="0" value="900000"></label>
+          <label for="inCallVol"><span>Call volume</span><input id="inCallVol" type="number" inputmode="decimal" step="any" min="0" value="1500000"></label>
+          <label for="inPutOI"><span>Put OI</span><input id="inPutOI" type="number" inputmode="decimal" step="any" min="0" value="12000000"></label>
+          <label for="inCallOI"><span>Call OI</span><input id="inCallOI" type="number" inputmode="decimal" step="any" min="0" value="15000000"></label>
+        </div>
+        <div class="results" aria-live="polite">
+          <div class="stat"><div class="k">Volume P/C</div><div class="v" id="outPcrVol">–</div></div>
+          <div class="stat"><div class="k">Put share of volume</div><div class="v" id="outPutShare">–</div></div>
+          <div class="stat"><div class="k">Open-interest P/C</div><div class="v" id="outPcrOI">–</div></div>
+        </div>
+        <div class="check" id="outPcrRead"></div>
+        <div class="example">Example numbers shown. The reading uses rough equity-only rules of thumb; index ratios run higher.</div>
+      </div>
+      <ul class="notes">
+        <li><strong>Rules of thumb (equity-only):</strong> below about 0.5 suggests complacency; around 0.6–0.8 is common; above about 1.0 suggests fear. Levels drift over the years, so compare with a recent average rather than fixed lines.</li>
+        <li><strong>Smooth it:</strong> daily values jump around; traders often watch a 10- or 21-day moving average, or how far today sits from it.</li>
+        <li><strong>Caveats:</strong> a put can be a hedge, a bearish bet or the other side of a spread, and the ratio cannot tell which; read it alongside price trend and the VIX.</li>
+      </ul>
+    </section>
   </main>
 
-  <footer>For education and reference only, not investment advice. Models rest on simplifying assumptions and real option prices can differ. Formulas follow the standard Black–Scholes–Merton model and the Cboe VIX white paper. <a href="https://github.com/hfgong/options">Source &amp; full disclaimer</a></footer>
+  <footer>For education and reference only, not investment advice. Models rest on simplifying assumptions and real option prices can differ. Formulas follow the standard Black–Scholes–Merton model and the Cboe VIX white paper; put/call levels are rules of thumb. <a href="https://github.com/hfgong/options">Source &amp; full disclaimer</a></footer>
 </div>
 </body>
 </html>

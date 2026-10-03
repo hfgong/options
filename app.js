@@ -79,7 +79,25 @@
     $('outYear').textContent = out(vix);
   }
 
-  // ---- Tabs: one topic at a time; the URL hash (#parity, #black-scholes, #greeks, #vix) selects one ----
+  // Put/call ratio, with a rough equity-only sentiment reading.
+  function updatePcr() {
+    const pv = num('inPutVol'), cv = num('inCallVol'), po = num('inPutOI'), co = num('inCallOI');
+    const vol = pv >= 0 && cv > 0 ? pv / cv : NaN;
+    const oi = po >= 0 && co > 0 ? po / co : NaN;
+    $('outPcrVol').textContent = fmt(vol, 2);
+    $('outPutShare').textContent = Number.isFinite(vol) ? `${(100 * vol / (1 + vol)).toFixed(1)}%` : '–';
+    $('outPcrOI').textContent = fmt(oi, 2);
+    let read = 'Enter put and call volume (call volume above zero).';
+    if (Number.isFinite(vol)) {
+      if (vol < 0.5) read = 'Volume P/C below 0.5: traders lean heavily to calls, a sign of <b>complacency</b> (contrarian caution).';
+      else if (vol < 0.8) read = 'Volume P/C in the usual 0.5–0.8 band for equities: <b>no extreme</b>.';
+      else if (vol < 1) read = 'Volume P/C 0.8–1.0: <b>more defensive</b> than usual.';
+      else read = 'Volume P/C at or above 1.0: puts outnumber calls, a sign of <b>fear</b> (contrarian support).';
+    }
+    $('outPcrRead').innerHTML = read;
+  }
+
+  // ---- Tabs: one topic at a time; the URL hash (#parity, #black-scholes, #greeks, #vix, #pcr) selects one ----
   const tabs = [...document.querySelectorAll('.tab')];
   const TAB_KEY = 'options-cheatsheet:tab';
 
@@ -123,8 +141,10 @@
 
   ['inS', 'inK', 'inT', 'inR', 'inV', 'inQ'].forEach((id) => $(id).addEventListener('input', updateBS));
   ['inVix', 'inSpx'].forEach((id) => $(id).addEventListener('input', updateVix));
+  ['inPutVol', 'inCallVol', 'inPutOI', 'inCallOI'].forEach((id) => $(id).addEventListener('input', updatePcr));
   updateBS();
   updateVix();
+  updatePcr();
 })();
 
 if ('serviceWorker' in navigator) {

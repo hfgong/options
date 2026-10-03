@@ -1,7 +1,7 @@
 {
   "name": "Option Formulas Cheatsheet",
   "short_name": "Options",
-  "description": "Put–call parity, Black–Scholes, the Greeks and the VIX, with a live calculator. Works offline.",
+  "description": "Put–call parity, Black–Scholes, the Greeks, the VIX and the put/call ratio, with live calculators. Works offline.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

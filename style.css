@@ -118,6 +118,7 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; letter-spacing: -0.01em; te
 .tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .tab .short { display: none; }
 @media (max-width: 520px) {
+  .tab { font-size: 0.82rem; padding-inline: 2px; }
   .tab .long { display: none; }
   .tab .short { display: inline; }
 }
