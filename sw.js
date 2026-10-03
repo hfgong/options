@@ -1,6 +1,6 @@
 // Network-first: when online every load gets the latest files (so a normal refresh
 // picks up new deploys); the cache is the fallback for offline use.
-const CACHE_NAME = 'options-v1';
+const CACHE_NAME = 'options-v2';
 const urlsToCache = [
   './',
   './index.html',
