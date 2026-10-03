@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Option Formulas Cheatsheet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Option formulas at a glance: put–call parity, Black–Scholes, the Greeks and the VIX, with a live calculator. Works offline.">
+  <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#090d16" media="(prefers-color-scheme: dark)">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&amp;display=swap">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="app.js"></script>
+</head>
+<body>
+<div class="page">
+  <header>
+    <div class="brand">
+      <img src="icon.svg" alt="" width="30" height="30">
+      <div>
+        <h1>Option Formulas Cheatsheet</h1>
+        <p class="subtitle">Put–call parity · Black–Scholes · Greeks · VIX</p>
+      </div>
+    </div>
+    <div class="legend" aria-label="Symbols">
+      <span><b>S</b> spot</span><span><b>K</b> strike</span><span><b>T</b> years to expiry</span>
+      <span><b>r</b> risk-free rate</span><span><b>σ</b> volatility</span><span><b>q</b> dividend yield</span>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Formula topics">
+    <button class="tab" role="tab" id="tab-parity" aria-controls="parity" data-panel="parity"><span class="long">Put–Call Parity</span><span class="short">Parity</span></button>
+    <button class="tab" role="tab" id="tab-black-scholes" aria-controls="black-scholes" data-panel="black-scholes"><span class="long">Black–Scholes</span><span class="short">B–S</span></button>
+    <button class="tab" role="tab" id="tab-greeks" aria-controls="greeks" data-panel="greeks"><span class="long">Greeks</span><span class="short">Greeks</span></button>
+    <button class="tab" role="tab" id="tab-vix" aria-controls="vix" data-panel="vix"><span class="long">VIX</span><span class="short">VIX</span></button>
+  </nav>
+
+  <main>
+    <!-- 1. Put–call parity -->
+    <section class="card" id="parity" role="tabpanel" aria-labelledby="parity-h" tabindex="0" hidden>
+      <div class="card-head"><h2 id="parity-h">Put–Call Parity</h2><span class="tag">European</span></div>
+      <p class="lede">A call and a put with the same strike and expiry are tied together: owning the call plus cash equal to the strike's present value pays off exactly like owning the put plus the stock.</p>
+      <div class="eq hero">
+        <div class="eq-row"><span class="eq-label">Core</span>
+          <math display="block"><mi>C</mi><mo>+</mo><mi>K</mi><msup><mi>e</mi><mrow><mo>−</mo><mi>r</mi><mi>T</mi></mrow></msup><mo>=</mo><mi>P</mi><mo>+</mo><mi>S</mi></math>
+        </div>
+        <div class="eq-row"><span class="eq-label">Solved</span>
+          <math display="block"><mi>C</mi><mo>−</mo><mi>P</mi><mo>=</mo><mi>S</mi><mo>−</mo><mi>K</mi><msup><mi>e</mi><mrow><mo>−</mo><mi>r</mi><mi>T</mi></mrow></msup></math>
+        </div>
+        <div class="eq-row"><span class="eq-label">Dividends</span>
+          <math display="block"><mi>C</mi><mo>−</mo><mi>P</mi><mo>=</mo><mi>S</mi><msup><mi>e</mi><mrow><mo>−</mo><mi>q</mi><mi>T</mi></mrow></msup><mo>−</mo><mi>K</mi><msup><mi>e</mi><mrow><mo>−</mo><mi>r</mi><mi>T</mi></mrow></msup></math>
+        </div>
+      </div>
+      <dl class="vars">
+        <dt><i>C</i>, <i>P</i></dt><dd>European call and put prices, same strike <i>K</i> and expiry <i>T</i></dd>
+        <dt><i>K</i>e<sup>−rT</sup></dt><dd>present value of the strike (a zero-coupon bond paying <i>K</i> at expiry)</dd>
+        <dt><i>q</i></dt><dd>continuous dividend yield; for discrete dividends replace <i>S</i>e<sup>−qT</sup> with <i>S</i> − PV(dividends)</dd>
+      </dl>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Synthetic position</th><th>Built from</th></tr></thead>
+          <tbody>
+            <tr><td>Long stock</td><td><math><mi>C</mi><mo>−</mo><mi>P</mi><mo>+</mo><mi>K</mi><msup><mi>e</mi><mrow><mo>−</mo><mi>r</mi><mi>T</mi></mrow></msup></math></td></tr>
+            <tr><td>Long call</td><td><math><mi>P</mi><mo>+</mo><mi>S</mi><mo>−</mo><mi>K</mi><msup><mi>e</mi><mrow><mo>−</mo><mi>r</mi><mi>T</mi></mrow></msup></math></td></tr>
+            <tr><td>Long put</td><td><math><mi>C</mi><mo>−</mo><mi>S</mi><mo>+</mo><mi>K</mi><msup><mi>e</mi><mrow><mo>−</mo><mi>r</mi><mi>T</mi></mrow></msup></math></td></tr>
+            <tr><td>Long forward at <i>K</i></td><td><math><mi>C</mi><mo>−</mo><mi>P</mi></math> (long call + short put)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="notes">
+        <li><strong>Arbitrage:</strong> if <i>C</i> − <i>P</i> is above <i>S</i> − <i>K</i>e<sup>−rT</sup>, sell the call, buy the put and the stock, and borrow the difference (a conversion); if below, do the reverse (a reversal).</li>
+        <li><strong>American options</strong> (no dividends) only satisfy bounds: <i>S</i> − <i>K</i> ≤ <i>C</i> − <i>P</i> ≤ <i>S</i> − <i>K</i>e<sup>−rT</sup>.</li>
+      </ul>
+    </section>
+
+    <!-- 2. Black–Scholes -->
+    <section class="card" id="black-scholes" role="tabpanel" aria-labelledby="bs-h" tabindex="0" hidden>
+      <div class="card-head"><h2 id="bs-h">Black–Scholes Model</h2><span class="tag">Pricing</span></div>
+      <p class="lede">Prices a European option from five inputs, assuming the stock follows a lognormal random walk with constant volatility and interest rate. <a href="https://www.investopedia.com/terms/b/blackscholes.asp" target="_blank" rel="noopener">Investopedia overview</a></p>
+      <div class="eq hero">
+        <div class="eq-row"><span class="eq-label call">Call</span>
+          <math display="block"><mi>C</mi><mo>=</mo><mi>S</mi><mi>N</mi><mo>(</mo><msub><mi>d</mi><mn>1</mn></msub><mo>)</mo><mo>−</mo><mi>K</mi><msup><mi>e</mi><mrow><mo>−</mo><mi>r</mi><mi>T</mi></mrow></msup><mi>N</mi><mo>(</mo><msub><mi>d</mi><mn>2</mn></msub><mo>)</mo></math>
+        </div>
+        <div class="eq-row"><span class="eq-label put">Put</span>
+          <math display="block"><mi>P</mi><mo>=</mo><mi>K</mi><msup><mi>e</mi><mrow><mo>−</mo><mi>r</mi><mi>T</mi></mrow></msup><mi>N</mi><mo>(</mo><mo>−</mo><msub><mi>d</mi><mn>2</mn></msub><mo>)</mo><mo>−</mo><mi>S</mi><mi>N</mi><mo>(</mo><mo>−</mo><msub><mi>d</mi><mn>1</mn></msub><mo>)</mo></math>
+        </div>
+        <div class="eq-row"><span class="eq-label"><i>d</i>₁</span>
+          <math display="block"><msub><mi>d</mi><mn>1</mn></msub><mo>=</mo><mfrac><mrow><mi>ln</mi><mo>⁡</mo><mo>(</mo><mi>S</mi><mo>/</mo><mi>K</mi><mo>)</mo><mo>+</mo><mo>(</mo><mi>r</mi><mo>+</mo><mfrac><msup><mi>σ</mi><mn>2</mn></msup><mn>2</mn></mfrac><mo>)</mo><mi>T</mi></mrow><mrow><mi>σ</mi><msqrt><mi>T</mi></msqrt></mrow></mfrac></math>
+        </div>
+        <div class="eq-row"><span class="eq-label"><i>d</i>₂</span>
+          <math display="block"><msub><mi>d</mi><mn>2</mn></msub><mo>=</mo><msub><mi>d</mi><mn>1</mn></msub><mo>−</mo><mi>σ</mi><msqrt><mi>T</mi></msqrt></math>
+        </div>
+      </div>
+      <dl class="vars">
+        <dt><i>N</i>(·)</dt><dd>standard normal cumulative distribution function</dd>
+        <dt><i>N</i>(<i>d</i>₂)</dt><dd>risk-neutral probability the call finishes in the money</dd>
+        <dt><i>σ</i></dt><dd>annualised volatility of the stock's log returns</dd>
+        <dt>with <i>q</i></dt><dd>replace <i>S</i> by <i>S</i>e<sup>−qT</sup> in the prices, and <i>r</i> by <i>r</i> − <i>q</i> inside <i>d</i>₁</dd>
+      </dl>
+      <div class="calc" aria-labelledby="calc-h">
+        <div class="calc-title" id="calc-h">Try it · prices and Greeks update as you type</div>
+        <div class="inputs">
+          <label for="inS"><span><i>S</i> spot</span><input id="inS" type="number" inputmode="decimal" step="any" value="100"></label>
+          <label for="inK"><span><i>K</i> strike</span><input id="inK" type="number" inputmode="decimal" step="any" value="100"></label>
+          <label for="inT"><span><i>T</i> days</span><input id="inT" type="number" inputmode="decimal" step="any" value="182.5"></label>
+          <label for="inR"><span><i>r</i> rate %</span><input id="inR" type="number" inputmode="decimal" step="any" value="5"></label>
+          <label for="inV"><span><i>σ</i> vol %</span><input id="inV" type="number" inputmode="decimal" step="any" value="20"></label>
+          <label for="inQ"><span><i>q</i> div %</span><input id="inQ" type="number" inputmode="decimal" step="any" value="0"></label>
+        </div>
+        <div class="results" aria-live="polite">
+          <div class="stat call"><div class="k">Call price</div><div class="v" id="outC">–</div></div>
+          <div class="stat put"><div class="k">Put price</div><div class="v" id="outP">–</div></div>
+          <div class="stat"><div class="k"><i>d</i>₁</div><div class="v" id="outD1">–</div></div>
+          <div class="stat"><div class="k"><i>d</i>₂</div><div class="v" id="outD2">–</div></div>
+        </div>
+        <div class="check" id="outParity"></div>
+        <div class="example">Starts with an example: at-the-money, 6 months, 5% rate, 20% volatility.</div>
+      </div>
+      <ul class="notes">
+        <li><strong>Assumptions:</strong> European exercise, constant <i>r</i> and <i>σ</i>, lognormal prices, no transaction costs or taxes, continuous trading.</li>
+        <li>Solving the formula backwards for <i>σ</i> from a market price gives the <strong>implied volatility</strong>.</li>
+      </ul>
+    </section>
+
+    <!-- 3. Greeks -->
+    <section class="card" id="greeks" role="tabpanel" aria-labelledby="greeks-h" tabindex="0" hidden>
+      <div class="card-head"><h2 id="greeks-h">The Greeks</h2><span class="tag">Sensitivities</span></div>
+      <p class="lede">Partial derivatives of the Black–Scholes price: how much the option value moves for a small change in one input. Shown without dividends; the numbers under each formula use the calculator's inputs.</p>
+      <p class="using" id="greeksUsing"></p>
+      <div class="eq">
+        <div class="eq-row"><span class="eq-label">Density</span>
+          <math display="block"><mi>φ</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><mfrac><mn>1</mn><msqrt><mrow><mn>2</mn><mi>π</mi></mrow></msqrt></mfrac><msup><mi>e</mi><mrow><mo>−</mo><msup><mi>x</mi><mn>2</mn></msup><mo>/</mo><mn>2</mn></mrow></msup></math>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Greek</th><th class="call">Call</th><th class="put">Put</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="greek">Δ<small>Delta · ∂V/∂S</small></td>
+              <td><math><mi>N</mi><mo>(</mo><msub><mi>d</mi><mn>1</mn></msub><mo>)</mo></math><span class="val call" id="gDc">–</span></td>
+              <td><math><mi>N</mi><mo>(</mo><msub><mi>d</mi><mn>1</mn></msub><mo>)</mo><mo>−</mo><mn>1</mn></math><span class="val put" id="gDp">–</span></td>
+            </tr>
+            <tr>
+              <td class="greek">Γ<small>Gamma · ∂²V/∂S²</small></td>
+              <td><math><mfrac><mrow><mi>φ</mi><mo>(</mo><msub><mi>d</mi><mn>1</mn></msub><mo>)</mo></mrow><mrow><mi>S</mi><mi>σ</mi><msqrt><mi>T</mi></msqrt></mrow></mfrac></math><span class="val call" id="gGc">–</span></td>
+              <td><span class="same">same as call</span><span class="val put" id="gGp">–</span></td>
+            </tr>
+            <tr>
+              <td class="greek">𝜈<small>Vega · ∂V/∂σ</small></td>
+              <td><math><mi>S</mi><mi>φ</mi><mo>(</mo><msub><mi>d</mi><mn>1</mn></msub><mo>)</mo><msqrt><mi>T</mi></msqrt></math><span class="val call" id="gVc">–</span></td>
+              <td><span class="same">same as call</span><span class="val put" id="gVp">–</span></td>
+            </tr>
+            <tr>
+              <td class="greek">Θ<small>Theta · ∂V/∂t</small></td>
+              <td><math><mo>−</mo><mfrac><mrow><mi>S</mi><mi>φ</mi><mo>(</mo><msub><mi>d</mi><mn>1</mn></msub><mo>)</mo><mi>σ</mi></mrow><mrow><mn>2</mn><msqrt><mi>T</mi></msqrt></mrow></mfrac><mo>−</mo><mi>r</mi><mi>K</mi><msup><mi>e</mi><mrow><mo>−</mo><mi>r</mi><mi>T</mi></mrow></msup><mi>N</mi><mo>(</mo><msub><mi>d</mi><mn>2</mn></msub><mo>)</mo></math><span class="val call" id="gTc">–</span></td>
+              <td><math><mo>−</mo><mfrac><mrow><mi>S</mi><mi>φ</mi><mo>(</mo><msub><mi>d</mi><mn>1</mn></msub><mo>)</mo><mi>σ</mi></mrow><mrow><mn>2</mn><msqrt><mi>T</mi></msqrt></mrow></mfrac><mo>+</mo><mi>r</mi><mi>K</mi><msup><mi>e</mi><mrow><mo>−</mo><mi>r</mi><mi>T</mi></mrow></msup><mi>N</mi><mo>(</mo><mo>−</mo><msub><mi>d</mi><mn>2</mn></msub><mo>)</mo></math><span class="val put" id="gTp">–</span></td>
+            </tr>
+            <tr>
+              <td class="greek">ρ<small>Rho · ∂V/∂r</small></td>
+              <td><math><mi>K</mi><mi>T</mi><msup><mi>e</mi><mrow><mo>−</mo><mi>r</mi><mi>T</mi></mrow></msup><mi>N</mi><mo>(</mo><msub><mi>d</mi><mn>2</mn></msub><mo>)</mo></math><span class="val call" id="gRc">–</span></td>
+              <td><math><mo>−</mo><mi>K</mi><mi>T</mi><msup><mi>e</mi><mrow><mo>−</mo><mi>r</mi><mi>T</mi></mrow></msup><mi>N</mi><mo>(</mo><mo>−</mo><msub><mi>d</mi><mn>2</mn></msub><mo>)</mo></math><span class="val put" id="gRp">–</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="notes">
+        <li><strong>Units of the numbers:</strong> Vega per 1 volatility point (÷100), Theta per calendar day (÷365), Rho per 1% rate change (÷100).</li>
+        <li><strong>Reading them:</strong> Δ ≈ hedge ratio (shares per option); Γ is how fast Δ changes and peaks at the money near expiry; long options lose Θ every day and gain from 𝜈.</li>
+        <li>Delta-gamma approximation: <i>ΔV</i> ≈ Δ·<i>ΔS</i> + ½Γ·<i>ΔS</i>² + 𝜈·<i>Δσ</i> + Θ·<i>Δt</i>.</li>
+      </ul>
+    </section>
+
+    <!-- 4. VIX -->
+    <section class="card" id="vix" role="tabpanel" aria-labelledby="vix-h" tabindex="0" hidden>
+      <div class="card-head"><h2 id="vix-h">VIX Index</h2><span class="tag">Cboe method</span></div>
+      <p class="lede">The market's expected volatility of the S&amp;P 500 over the next 30 days, in annualised percent. It is computed from a strip of out-of-the-money SPX option prices, without using Black–Scholes.</p>
+      <div class="eq hero">
+        <div class="eq-row"><span class="eq-label">Per term</span>
+          <math display="block"><msup><mi>σ</mi><mn>2</mn></msup><mo>=</mo><mfrac><mn>2</mn><mi>T</mi></mfrac><munder><mo>∑</mo><mi>i</mi></munder><mfrac><mrow><mi>Δ</mi><msub><mi>K</mi><mi>i</mi></msub></mrow><msubsup><mi>K</mi><mi>i</mi><mn>2</mn></msubsup></mfrac><msup><mi>e</mi><mrow><mi>R</mi><mi>T</mi></mrow></msup><mi>Q</mi><mo>(</mo><msub><mi>K</mi><mi>i</mi></msub><mo>)</mo><mo>−</mo><mfrac><mn>1</mn><mi>T</mi></mfrac><msup><mrow><mo>(</mo><mfrac><mi>F</mi><msub><mi>K</mi><mn>0</mn></msub></mfrac><mo>−</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup></math>
+        </div>
+        <div class="eq-row"><span class="eq-label">Blend</span>
+          <math display="block"><msubsup><mi>σ</mi><mn>30</mn><mn>2</mn></msubsup><mo>=</mo><msub><mi>T</mi><mn>1</mn></msub><msubsup><mi>σ</mi><mn>1</mn><mn>2</mn></msubsup><mfrac><mrow><msub><mi>N</mi><msub><mi>T</mi><mn>2</mn></msub></msub><mo>−</mo><msub><mi>N</mi><mn>30</mn></msub></mrow><mrow><msub><mi>N</mi><msub><mi>T</mi><mn>2</mn></msub></msub><mo>−</mo><msub><mi>N</mi><msub><mi>T</mi><mn>1</mn></msub></msub></mrow></mfrac><mo>+</mo><msub><mi>T</mi><mn>2</mn></msub><msubsup><mi>σ</mi><mn>2</mn><mn>2</mn></msubsup><mfrac><mrow><msub><mi>N</mi><mn>30</mn></msub><mo>−</mo><msub><mi>N</mi><msub><mi>T</mi><mn>1</mn></msub></msub></mrow><mrow><msub><mi>N</mi><msub><mi>T</mi><mn>2</mn></msub></msub><mo>−</mo><msub><mi>N</mi><msub><mi>T</mi><mn>1</mn></msub></msub></mrow></mfrac></math>
+        </div>
+        <div class="eq-row"><span class="eq-label">VIX</span>
+          <math display="block"><mtext>VIX</mtext><mo>=</mo><mn>100</mn><mo>×</mo><msqrt><mrow><msubsup><mi>σ</mi><mn>30</mn><mn>2</mn></msubsup><mo>×</mo><mfrac><msub><mi>N</mi><mn>365</mn></msub><msub><mi>N</mi><mn>30</mn></msub></mfrac></mrow></msqrt></math>
+        </div>
+        <div class="eq-row"><span class="eq-label">Forward</span>
+          <math display="block"><mi>F</mi><mo>=</mo><mtext>strike</mtext><mo>+</mo><msup><mi>e</mi><mrow><mi>R</mi><mi>T</mi></mrow></msup><mo>(</mo><mtext>call</mtext><mo>−</mo><mtext>put</mtext><mo>)</mo></math>
+        </div>
+      </div>
+      <dl class="vars">
+        <dt><i>T</i></dt><dd>time to expiry in years, counted in minutes (near term <i>T</i>₁, next term <i>T</i>₂, both 23–37 days out)</dd>
+        <dt><i>K</i>₀</dt><dd>first listed strike at or below the forward level <i>F</i></dd>
+        <dt><i>K</i><sub>i</sub>, <i>Q</i>(<i>K</i><sub>i</sub>)</dt><dd>strike of the <i>i</i>-th out-of-the-money option and its bid–ask midpoint (puts below <i>K</i>₀, calls above, both averaged at <i>K</i>₀)</dd>
+        <dt><i>ΔK</i><sub>i</sub></dt><dd>half the gap between neighbouring strikes: (<i>K</i><sub>i+1</sub> − <i>K</i><sub>i−1</sub>)/2</dd>
+        <dt><i>R</i></dt><dd>risk-free rate to each expiry (from U.S. Treasury yields)</dd>
+        <dt><i>N</i><sub>x</sub></dt><dd>minutes: to each expiry (<i>N</i><sub>T₁</sub>, <i>N</i><sub>T₂</sub>), in 30 days (43,200) and in a year (525,600)</dd>
+      </dl>
+      <ol class="steps">
+        <li><strong>Find <i>F</i></strong> at the strike where |call − put| is smallest, then set <i>K</i>₀.</li>
+        <li><strong>Select options:</strong> out-of-the-money puts and calls with non-zero bids, stopping after two consecutive zero bids.</li>
+        <li><strong>Compute <i>σ</i>₁², <i>σ</i>₂²</strong> for the two expiries with the per-term formula.</li>
+        <li><strong>Interpolate</strong> to a constant 30 days and annualise; VIX is 100 × the square root.</li>
+      </ol>
+      <div class="calc" aria-labelledby="vix-calc-h">
+        <div class="calc-title" id="vix-calc-h">Rule of thumb · expected S&amp;P 500 move (one standard deviation)</div>
+        <div class="inputs">
+          <label for="inVix"><span>VIX level</span><input id="inVix" type="number" inputmode="decimal" step="any" value="16"></label>
+          <label for="inSpx"><span>S&amp;P 500</span><input id="inSpx" type="number" inputmode="decimal" step="any" value="5000"></label>
+        </div>
+        <div class="results" aria-live="polite">
+          <div class="stat"><div class="k">1 day ≈ VIX/√252</div><div class="v" id="outDay">–</div></div>
+          <div class="stat"><div class="k">30 days ≈ VIX/√12</div><div class="v" id="outMonth">–</div></div>
+          <div class="stat"><div class="k">1 year ≈ VIX</div><div class="v" id="outYear">–</div></div>
+        </div>
+        <div class="example">Example level shown. About 68% of the time the index stays within these ranges, if returns are roughly normal.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>For education and reference only, not investment advice. Models rest on simplifying assumptions and real option prices can differ. Formulas follow the standard Black–Scholes–Merton model and the Cboe VIX white paper. <a href="https://github.com/hfgong/options">Source &amp; full disclaimer</a></footer>
+</div>
+</body>
+</html>
